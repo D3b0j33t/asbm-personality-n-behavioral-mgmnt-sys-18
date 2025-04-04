@@ -18,10 +18,26 @@ interface NotificationIconProps {
 const NotificationIcon: React.FC<NotificationIconProps> = ({ isScrolled = false }) => {
   // Placeholder notifications
   const notifications = [
-    { id: 1, text: 'Assignment deadline extended', time: '2 hours ago' },
-    { id: 2, text: 'New course material available', time: '1 day ago' },
-    { id: 3, text: 'Exam scheduled for next week', time: '2 days ago' }
+    { id: 1, text: 'Assignment deadline extended', time: '2 hours ago', type: 'assignment' },
+    { id: 2, text: 'New course material available', time: '1 day ago', type: 'material' },
+    { id: 3, text: 'Exam scheduled for next week', time: '2 days ago', type: 'exam' },
+    { id: 4, text: 'Discussion post requires your attention', time: '3 days ago', type: 'discussion' }
   ];
+
+  const getNotificationIcon = (type: string) => {
+    switch(type) {
+      case 'assignment':
+        return '📝';
+      case 'material':
+        return '📚';
+      case 'exam':
+        return '📋';
+      case 'discussion':
+        return '💬';
+      default:
+        return '🔔';
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -48,9 +64,12 @@ const NotificationIcon: React.FC<NotificationIconProps> = ({ isScrolled = false 
           </div>
         </DropdownMenuLabel>
         {notifications.map((notification) => (
-          <DropdownMenuItem key={notification.id} className="cursor-pointer py-3 px-4 flex flex-col items-start">
-            <p className="text-sm">{notification.text}</p>
-            <span className="text-xs text-muted-foreground">{notification.time}</span>
+          <DropdownMenuItem key={notification.id} className="cursor-pointer py-3 px-4 flex items-start gap-2">
+            <div className="flex-shrink-0 mt-0.5 text-lg">{getNotificationIcon(notification.type)}</div>
+            <div className="flex-1">
+              <p className="text-sm">{notification.text}</p>
+              <span className="text-xs text-muted-foreground">{notification.time}</span>
+            </div>
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />

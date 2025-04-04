@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import UserAvatar from './UserAvatar';
 import NotificationIcon from './NotificationIcon';
-import { LogOut, MenuIcon } from 'lucide-react';
+import { Menu, Plus } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,20 +21,35 @@ interface NavigationHeaderProps {
 
 const NavigationHeader: React.FC<NavigationHeaderProps> = ({ toggleSidebar }) => {
   const { userName, userRole, userAvatar, logout } = useAuth();
-
+  
   return (
-    <header className="h-16 border-b flex items-center px-4 md:px-6 bg-background z-20">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2">
-        <MenuIcon className="h-5 w-5" />
+    <header className="h-16 border-b flex items-center px-4 md:px-6 bg-background z-30 fixed top-0 right-0 left-0 lg:left-64 transition-all duration-300">
+      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="lg:hidden mr-2">
+        <Menu className="h-5 w-5" />
       </Button>
       
       <div className="flex items-center flex-1">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/lovable-uploads/e837c76a-f20c-4215-b385-a87dd3a9f7ee.png" alt="ASBM University" className="h-10" />
+        <Link to="/" className="lg:hidden flex items-center gap-2">
+          <img src="/lovable-uploads/e837c76a-f20c-4215-b385-a87dd3a9f7ee.png" alt="ASBM University" className="h-8" />
           <span className="font-semibold text-lg hidden md:inline-block">ASBM Classroom</span>
         </Link>
         
-        <div className="flex-1 flex justify-end items-center gap-2">
+        <div className="ml-auto flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="outline" className="hidden md:flex items-center gap-1">
+                <Plus className="h-4 w-4" />
+                <span>Create</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>New Assignment</DropdownMenuItem>
+              <DropdownMenuItem>New Announcement</DropdownMenuItem>
+              <DropdownMenuItem>New Material</DropdownMenuItem>
+              <DropdownMenuItem>New Question</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
           <NotificationIcon />
           
           <DropdownMenu>
@@ -63,18 +78,17 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({ toggleSidebar }) =>
                 <Link to="/profile" className="cursor-pointer">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/todo" className="cursor-pointer">Tasks</Link>
+                <Link to="/settings" className="cursor-pointer">Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/calendar" className="cursor-pointer">Calendar</Link>
+                <Link to="/help" className="cursor-pointer">Help Center</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="cursor-pointer text-red-500 focus:text-red-500"
                 onClick={logout}
               >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
