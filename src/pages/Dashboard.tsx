@@ -10,6 +10,7 @@ import { Bell, Calendar, CheckCircle2, AlertTriangle, TrendingUp, Users, FilePie
 import { mockCourses, mockStudents } from '@/utils/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // Add this import
 
 const Dashboard = () => {
   const { userRole, userName } = useAuth();
