@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Chart } from "@/components/ui/chart";
+import { ChartContainer } from "@/components/ui/chart";
 
 interface ChartConfig {
   [key: string]: {
@@ -24,7 +24,7 @@ const PerformanceMetrics = () => {
         <CardDescription>Student performance across key metrics</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
-        <Chart 
+        <ChartContainer 
           config={chartConfig}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -57,7 +57,7 @@ const PerformanceMetrics = () => {
               <div className="mt-2 text-2xl font-bold">88%</div>
             </div>
           </div>
-        </Chart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
