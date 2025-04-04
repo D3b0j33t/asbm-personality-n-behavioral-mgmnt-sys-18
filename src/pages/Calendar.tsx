@@ -1,12 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { format, addMonths, subMonths, isSameDay } from 'date-fns';
 import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Calendar } from '@/components/ui/calendar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-const Calendar = () => {
+const CalendarPage = () => {
+  const isMobile = useIsMobile();
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  
   // Mock data for calendar events
   const events = [
     {
@@ -39,111 +46,120 @@ const Calendar = () => {
     },
   ];
   
-  // Days of the week for header
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // Navigation functions
+  const goToPreviousMonth = () => {
+    setCurrentDate(prev => subMonths(prev, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentDate(prev => addMonths(prev, 1));
+  };
+
+  const goToToday = () => {
+    setCurrentDate(new Date());
+    setSelectedDate(new Date());
+  };
   
-  // Current month data (would be dynamic in a real app)
-  const currentMonth = 'September 2023';
-  
-  // Generate calendar days (simplified version - would be dynamic in real app)
-  const calendarDays = Array.from({ length: 35 }, (_, i) => {
-    const day = i - 4; // Start September on Friday (offset by 4)
-    return {
-      day: day > 0 && day <= 30 ? day : null,
-      isCurrentMonth: day > 0 && day <= 30,
-      isToday: day === 15, // Assuming today is September 15
-      events: events.filter(event => {
-        const eventDay = new Date(event.date).getDate();
-        return eventDay === day;
-      }),
-    };
+  // Filter events for the selected date
+  const selectedDateEvents = events.filter(event => {
+    const eventDate = new Date(event.date);
+    return selectedDate && isSameDay(eventDate, selectedDate);
   });
   
+  // Filter upcoming events (all events from today onwards)
+  const upcomingEvents = events
+    .filter(event => new Date(event.date) >= new Date())
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
-      <main className="flex-1 p-4 md:p-6">
+      <main className="flex-1 p-4 md:p-6 mt-0">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Calendar</h1>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Previous Month</span>
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={goToToday}>
                 Today
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={goToNextMonth}>
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Next Month</span>
               </Button>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <Card>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle>{currentMonth}</CardTitle>
-                    <Button variant="ghost" size="sm">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      View Options
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-7 gap-px bg-muted text-center">
-                    {daysOfWeek.map((day) => (
-                      <div key={day} className="py-2 font-medium text-sm">
-                        {day}
-                      </div>
-                    ))}
-                    
-                    {calendarDays.map((day, idx) => (
-                      <div
-                        key={idx}
-                        className={`min-h-[80px] p-1 border border-border ${
-                          !day.isCurrentMonth ? 'bg-muted/50 text-muted-foreground' : 
-                          day.isToday ? 'bg-primary/5 border-primary/50' : ''
-                        }`}
-                      >
-                        {day.day !== null && (
-                          <>
-                            <div className={`text-right p-1 ${day.isToday ? 'font-bold' : ''}`}>
-                              {day.day}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle>{format(currentDate, 'MMMM yyyy')}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-center p-2">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    month={currentDate}
+                    onMonthChange={setCurrentDate}
+                    className="rounded-md border"
+                    showOutsideDays
+                  />
+                </div>
+                
+                {selectedDate && (
+                  <div className="mt-6">
+                    <h3 className="font-medium mb-2">
+                      Events on {format(selectedDate, 'MMMM d, yyyy')}
+                    </h3>
+                    <div className="space-y-2">
+                      {selectedDateEvents.length > 0 ? (
+                        selectedDateEvents.map((event) => (
+                          <div 
+                            key={event.id} 
+                            className="p-3 rounded-md" 
+                            style={{ backgroundColor: `${event.color}15`, borderLeft: `3px solid ${event.color}` }}
+                          >
+                            <p className="font-medium">{event.title}</p>
+                            <div className="flex items-center mt-1">
+                              <Badge
+                                variant="outline"
+                                className="text-xs"
+                                style={{ borderColor: event.color, color: event.color }}
+                              >
+                                {event.course}
+                              </Badge>
                             </div>
-                            <div className="space-y-1">
-                              {day.events.map((event) => (
-                                <div
-                                  key={event.id}
-                                  className="text-xs p-1 truncate rounded"
-                                  style={{ backgroundColor: `${event.color}20`, borderLeft: `3px solid ${event.color}` }}
-                                >
-                                  {event.title}
-                                </div>
-                              ))}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    ))}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-muted-foreground text-sm">No events scheduled</p>
+                      )}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                )}
+              </CardContent>
+            </Card>
             
-            <div>
+            {(!isMobile || (isMobile && !selectedDate)) && (
               <Card>
                 <CardHeader>
                   <CardTitle>Upcoming Events</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {events
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                    .map((event) => (
-                      <div key={event.id} className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50">
+                  {upcomingEvents.length > 0 ? (
+                    upcomingEvents.map((event) => (
+                      <div 
+                        key={event.id} 
+                        className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer"
+                        onClick={() => setSelectedDate(new Date(event.date))}
+                      >
                         <div className="w-10 text-center">
                           <div className="text-xs text-muted-foreground">
                             {new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}
@@ -165,10 +181,13 @@ const Calendar = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No upcoming events</p>
+                  )}
                 </CardContent>
               </Card>
-            </div>
+            )}
           </div>
         </div>
       </main>
@@ -176,4 +195,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default CalendarPage;
