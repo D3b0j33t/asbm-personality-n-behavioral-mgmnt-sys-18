@@ -1,146 +1,187 @@
 
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import NavigationHeader from "./NavigationHeader";
-import { useAuth } from "@/context/AuthContext";
-import {
-  BarChart3,
-  Calendar as CalendarIcon,
-  CheckSquare,
-  GraduationCap,
-  Home,
-  LucideIcon,
-  ShieldCheck,
-  UserCircle2,
-  BadgeCheck,
-  Users,
-  BookOpen,
-} from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { 
+  Menu, 
+  X, 
+  BarChart3, 
+  BookOpen, 
+  Calendar as CalendarIcon, 
+  LineChart, 
+  Users, 
+  Home, 
+  User, 
+  LogOut,
+  FileText 
+} from 'lucide-react';
+import NotificationIcon from './NotificationIcon';
+import UserAvatar from './UserAvatar';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-interface NavItemProps {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-  isActive: boolean;
-}
+const Navigation = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { pathname } = useLocation();
 
-const NavItem: React.FC<NavItemProps> = ({ to, label, icon: Icon, isActive }) => {
-  return (
-    <Link to={to} className="w-full">
-      <Button
-        variant="ghost"
-        className={cn(
-          "w-full justify-start transition-all duration-300",
-          isActive 
-            ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-            : "hover:bg-muted hover:text-primary"
-        )}
-      >
-        <Icon className={cn("mr-2 h-5 w-5", isActive ? "animate-pulse" : "")} />
-        {label}
-      </Button>
-    </Link>
-  );
-};
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
 
-const Navigation: React.FC = () => {
-  const location = useLocation();
-  const { userRole } = useAuth();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const commonNavItems = [
-    { to: "/", label: "Dashboard", icon: Home },
-    { to: "/calendar", label: "Calendar", icon: CalendarIcon },
-    { to: "/courses", label: "My Courses", icon: GraduationCap },
-    { to: "/todo", label: "Tasks", icon: CheckSquare },
-    { to: "/profile", label: "Profile", icon: UserCircle2 },
+  const navItems = [
+    { path: '/', label: 'Home', icon: <Home className="h-5 w-5" /> },
+    { path: '/courses', label: 'Courses', icon: <BookOpen className="h-5 w-5" /> },
+    { path: '/studentanalytics', label: 'Analytics', icon: <LineChart className="h-5 w-5" /> },
+    { path: '/reports', label: 'Reports', icon: <FileText className="h-5 w-5" /> },
+    { path: '/calendar', label: 'Calendar', icon: <CalendarIcon className="h-5 w-5" /> },
+    { path: '/admin', label: 'Admin', icon: <BarChart3 className="h-5 w-5" /> },
   ];
 
-  const roleBasedNavItems = {
-    student: [
-      { to: "/studentanalytics", label: "My Analytics", icon: BarChart3 },
-    ],
-    teacher: [
-      { to: "/reports", label: "Reports", icon: BarChart3 },
-      { to: "/students", label: "Students", icon: Users },
-      { to: "/admin", label: "Admin Panel", icon: ShieldCheck },
-    ],
-    admin: [
-      { to: "/reports", label: "Reports", icon: BarChart3 },
-      { to: "/students", label: "Students", icon: Users },
-      { to: "/admin", label: "Admin Panel", icon: ShieldCheck },
-    ],
-  };
-
-  const getNavItems = () => {
-    if (!userRole) return commonNavItems;
-
-    return [
-      ...commonNavItems,
-      ...(roleBasedNavItems[userRole] || []),
-    ];
-  };
-
-  const navItems = getNavItems();
-
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
-      <NavigationHeader toggleSidebar={toggleSidebar} />
-      
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar navigation */}
-        <aside
-          className={cn(
-            "border-r bg-background transition-all duration-300 ease-in-out flex-shrink-0 overflow-y-auto",
-            isSidebarOpen ? "w-64" : "w-0 -translate-x-full md:w-16 md:translate-x-0"
-          )}
-        >
-          <div className="flex h-full flex-col gap-2 p-4">
-            <div className="flex-1 space-y-2">
-              {navItems.map((item) => (
-                <NavItem
-                  key={item.to}
-                  to={item.to}
-                  label={item.label}
-                  icon={item.icon}
-                  isActive={location.pathname === item.to}
-                />
-              ))}
-            </div>
-            
-            <div className="p-4 bg-muted/40 rounded-lg space-y-2 animate-fade-in">
-              <h3 className="text-sm font-medium">ASBM University</h3>
-              <p className="text-xs text-muted-foreground">Bhubaneswar Campus</p>
-              <div className="flex items-center text-xs text-muted-foreground">
-                <BadgeCheck className="h-4 w-4 mr-1 text-primary" />
-                <span>Summer Term 2025</span>
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md' : 'bg-transparent'
+      }`}
+    >
+      <div className="flex items-center justify-between p-4 md:px-6">
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/e837c76a-f20c-4215-b385-a87dd3a9f7ee.png" 
+              alt="ASBM University" 
+              className="h-8 w-auto mr-2"
+            />
+            <span className={`font-bold text-lg hidden sm:inline ${
+              isScrolled ? 'text-gray-800' : 'text-white'
+            }`}>
+              ASBM University
+            </span>
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1">
+          {navItems.map((item) => (
+            <Link 
+              key={item.path}
+              to={item.path}
+              className={`nav-link px-3 py-2 rounded-md text-sm font-medium ${
+                pathname === item.path
+                  ? isScrolled 
+                    ? 'text-primary bg-primary/10' 
+                    : 'text-white bg-white/20'
+                  : isScrolled
+                    ? 'text-gray-600 hover:text-primary hover:bg-primary/5'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+              } transition-all duration-200`}
+            >
+              <div className="flex items-center space-x-1">
+                {item.icon}
+                <span>{item.label}</span>
               </div>
-            </div>
-          </div>
-        </aside>
+            </Link>
+          ))}
+        </nav>
         
-        {/* Mobile backdrop for sidebar */}
-        {isSidebarOpen && (
-          <div 
-            className="fixed inset-0 z-10 bg-black/50 md:hidden" 
-            onClick={toggleSidebar}
-          />
-        )}
-        
-        {/* Main content area */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="container mx-auto py-6 px-4 md:px-6">
-            {/* Content will be rendered here from Routes */}
-          </div>
-        </main>
+        {/* User Controls */}
+        <div className="flex items-center space-x-2">
+          <NotificationIcon isScrolled={isScrolled} />
+          
+          <Link to="/user/profile">
+            <UserAvatar />
+          </Link>
+
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className={`md:hidden ${
+                  isScrolled ? 'text-gray-800 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}
+              >
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[75vw] max-w-xs p-0">
+              <div className="flex flex-col h-full">
+                <div className="p-4 flex items-center justify-between border-b">
+                  <div className="flex items-center">
+                    <img 
+                      src="/lovable-uploads/e837c76a-f20c-4215-b385-a87dd3a9f7ee.png" 
+                      alt="ASBM University" 
+                      className="h-8 w-auto mr-2"
+                    />
+                    <span className="font-bold text-lg">ASBM</span>
+                  </div>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <X className="h-5 w-5" />
+                      <span className="sr-only">Close menu</span>
+                    </Button>
+                  </SheetTrigger>
+                </div>
+                
+                <div className="p-4 border-b">
+                  <div className="flex items-center space-x-3">
+                    <UserAvatar />
+                    <div>
+                      <p className="font-medium">Admin User</p>
+                      <p className="text-sm text-muted-foreground">admin@asbm.ac.in</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <nav className="flex-1 p-4 space-y-1">
+                  {navItems.map((item) => (
+                    <SheetTrigger key={item.path} asChild>
+                      <Link 
+                        to={item.path} 
+                        className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm transition-colors ${
+                          pathname === item.path 
+                            ? 'bg-primary/10 text-primary' 
+                            : 'hover:bg-muted'
+                        }`}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Link>
+                    </SheetTrigger>
+                  ))}
+                  
+                  <Separator className="my-2" />
+                  
+                  <SheetTrigger asChild>
+                    <Link to="/user/profile" className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors">
+                      <User className="h-5 w-5" />
+                      <span>Profile</span>
+                    </Link>
+                  </SheetTrigger>
+                  
+                  <SheetTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start px-3 py-2 h-auto font-normal text-sm text-red-500 hover:bg-red-50 hover:text-red-600"
+                      onClick={() => console.log('Logout clicked')}
+                    >
+                      <LogOut className="h-5 w-5 mr-2" />
+                      Logout
+                    </Button>
+                  </SheetTrigger>
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 

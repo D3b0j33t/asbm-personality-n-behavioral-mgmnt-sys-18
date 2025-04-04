@@ -201,6 +201,47 @@ const Login: React.FC = () => {
     }
   };
 
+  // Password strength indicator
+  const getPasswordStrength = (password: string) => {
+    if (!password) return 'none';
+    
+    let strength = 0;
+    // Length check
+    if (password.length >= 8) strength++;
+    // Uppercase letter check
+    if (/[A-Z]/.test(password)) strength++;
+    // Lowercase letter check
+    if (/[a-z]/.test(password)) strength++;
+    // Number check
+    if (/[0-9]/.test(password)) strength++;
+    // Special character check
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    if (strength < 3) return 'weak';
+    if (strength < 5) return 'medium';
+    return 'strong';
+  };
+
+  const renderPasswordStrength = (password: string) => {
+    const strength = getPasswordStrength(password);
+    if (strength === 'none') return null;
+    
+    return (
+      <div className="mt-1">
+        <div 
+          className={`password-strength-indicator ${
+            strength === 'weak' ? 'strength-weak' : 
+            strength === 'medium' ? 'strength-medium' : 'strength-strong'
+          }`}
+        ></div>
+        <p className="text-xs mt-1 text-muted-foreground">
+          {strength === 'weak' ? 'Weak password' : 
+           strength === 'medium' ? 'Medium strength password' : 'Strong password'}
+        </p>
+      </div>
+    );
+  };
+
   const renderForgotPasswordFlow = () => {
     switch (forgotPasswordFlow) {
       case 'forgotPassword':
@@ -367,6 +408,7 @@ const Login: React.FC = () => {
                       )}
                     </Button>
                   </div>
+                  {renderPasswordStrength(newPassword)}
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>
                   )}
@@ -524,6 +566,7 @@ const Login: React.FC = () => {
                       )}
                     </Button>
                   </div>
+                  {renderPasswordStrength(password)}
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>
                   )}

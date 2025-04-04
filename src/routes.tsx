@@ -6,6 +6,8 @@ import CourseListingPage from './pages/CourseListingPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import StudentAnalytics from './pages/StudentAnalytics';
 import StudentDetail from './pages/StudentDetail';
+import CalendarPage from './pages/Calendar';
+import Reports from './pages/Reports';
 
 // Define routes configuration
 export const routes = [
@@ -32,6 +34,14 @@ export const routes = [
   {
     path: '/student/:studentId',
     element: <StudentDetail />
+  },
+  {
+    path: '/calendar',
+    element: <CalendarPage />
+  },
+  {
+    path: '/reports',
+    element: <Reports />
   },
   {
     // Fallback route - redirect to dashboard if no match

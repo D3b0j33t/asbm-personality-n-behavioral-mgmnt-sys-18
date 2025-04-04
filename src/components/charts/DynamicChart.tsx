@@ -145,11 +145,18 @@ const DynamicChart: React.FC<ChartProps> = ({
       case 'radialBar':
         return (
           <ResponsiveContainer width="100%" height={height}>
-            <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="80%" barSize={10} data={data}>
+            <RadialBarChart 
+              cx="50%" 
+              cy="50%" 
+              innerRadius="20%" 
+              outerRadius="80%" 
+              barSize={10} 
+              data={data}
+            >
               <RadialBar
                 background
                 dataKey="value"
-                label={{ position: 'insideStart', fill: '#666', fontSize: 12 }}
+                label={{ position: "insideStart", fill: "#666", fontSize: 12 }}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
