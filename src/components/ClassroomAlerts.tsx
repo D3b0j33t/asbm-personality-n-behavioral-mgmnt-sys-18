@@ -22,7 +22,7 @@ const mockAlerts: ClassroomAlert[] = [
   {
     id: '1',
     title: 'New Assignment: Case Study Analysis',
-    description: 'Complete the case study analysis for next week's class.',
+    description: 'Complete the case study analysis for next week\'s class.',
     course: 'Business Ethics',
     deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     type: 'assignment',
@@ -48,7 +48,7 @@ const mockAlerts: ClassroomAlert[] = [
   {
     id: '4',
     title: 'Class Canceled Tomorrow',
-    description: 'Tomorrow's class is canceled due to faculty meeting. Will be rescheduled.',
+    description: 'Tomorrow\'s class is canceled due to faculty meeting. Will be rescheduled.',
     course: 'Business Law',
     type: 'announcement',
     createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
