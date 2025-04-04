@@ -1,563 +1,776 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from '@/components/ui/tabs';
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, Clock, User, Calendar, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { 
+  BookOpen, 
+  Users, 
+  FileText, 
+  BarChart3, 
+  CalendarIcon, 
+  CheckCircle2, 
+  Clock, 
+  MoreVertical,
+  Loader2,
+  Download,
+  Upload,
+  AlertCircle,
+  Search
+} from 'lucide-react';
+import { mockCourses } from '@/utils/mockData';
 import { useToast } from '@/hooks/use-toast';
-import CourseChart from '@/components/charts/CourseChart';
-import PageLayout from '@/components/PageLayout';
-
-const getCourseById = (id: string | number) => {
-  const courseId = typeof id === 'string' ? parseInt(id, 10) : id;
-  const courses = [
-    {
-      id: 1,
-      title: "Master of Business Administration (MBA)",
-      instructor: "Various Faculty Members",
-      subject: "Business Administration",
-      color: "#4285F4",
-      pendingAssignments: 3,
-      description: "A two-year full-time residential MBA program with options for single or dual specializations in areas such as Human Resource Management, Financial Management, Marketing Management, Operations & Logistics, and Business Analytics."
-    },
-    {
-      id: 2,
-      title: "Bachelor of Business Administration (BBA)",
-      instructor: "Various Faculty Members",
-      subject: "Business Administration",
-      color: "#0F9D58",
-      pendingAssignments: 2,
-      description: "An undergraduate program focusing on business fundamentals and management principles, designed to develop future business leaders."
-    },
-    {
-      id: 3,
-      title: "Master of Commerce (M.Com)",
-      instructor: "Various Faculty Members",
-      subject: "Commerce",
-      color: "#DB4437",
-      pendingAssignments: 1,
-      description: "A postgraduate program that provides advanced knowledge in commerce, accounting, and finance, preparing students for professional careers in the financial sector."
-    },
-    {
-      id: 4,
-      title: "Bachelor of Commerce (B.Com)",
-      instructor: "Various Faculty Members",
-      subject: "Commerce",
-      color: "#F4B400",
-      pendingAssignments: 0,
-      description: "An undergraduate program offering comprehensive knowledge in commerce, accounting, and business law, laying the foundation for a career in commerce and finance."
-    },
-    {
-      id: 5,
-      title: "Master of Arts in Applied Psychology",
-      instructor: "Various Faculty Members",
-      subject: "Psychology",
-      color: "#673AB7",
-      pendingAssignments: 2,
-      description: "A postgraduate program that explores theoretical concepts in psychology and trains students to address human behavior issues in various settings."
-    },
-    {
-      id: 6,
-      title: "Bachelor of Arts in Psychology",
-      instructor: "Various Faculty Members",
-      subject: "Psychology",
-      color: "#FF6D00",
-      pendingAssignments: 1,
-      description: "An undergraduate program focusing on the study of human behavior and mental processes, preparing students for careers in psychology and related fields."
-    },
-    {
-      id: 7,
-      title: "Master of Computer Application (MCA)",
-      instructor: "Various Faculty Members",
-      subject: "Computer Applications",
-      color: "#2196F3",
-      pendingAssignments: 3,
-      description: "A postgraduate program designed to provide comprehensive knowledge in computer applications and software development."
-    },
-    {
-      id: 8,
-      title: "Bachelor of Computer Application (BCA)",
-      instructor: "Various Faculty Members",
-      subject: "Computer Applications",
-      color: "#009688",
-      pendingAssignments: 2,
-      description: "An undergraduate program that imparts knowledge in computer applications and prepares students for careers in the IT industry."
-    },
-    {
-      id: 9,
-      title: "Bachelor of Technology in Computer Science & Information Technology (B.Tech CSIT)",
-      instructor: "Various Faculty Members",
-      subject: "Engineering",
-      color: "#795548",
-      pendingAssignments: 4,
-      description: "An undergraduate engineering program focusing on computer science and information technology, equipping students with technical skills for the IT industry."
-    },
-    {
-      id: 10,
-      title: "BBA LL.B. (Hons.)",
-      instructor: "Various Faculty Members",
-      subject: "Law",
-      color: "#607D8B",
-      pendingAssignments: 0,
-      description: "An integrated five-year program combining business administration and law, preparing students for careers in corporate law and business management."
-    },
-    {
-      id: 11,
-      title: "BA LL.B. (Hons.)",
-      instructor: "Various Faculty Members",
-      subject: "Law",
-      color: "#E91E63",
-      pendingAssignments: 1,
-      description: "An integrated five-year program combining arts and law, designed to develop legal professionals with a strong foundation in humanities."
-    },
-    {
-      id: 12,
-      title: "Master of Laws (LL.M)",
-      instructor: "Various Faculty Members",
-      subject: "Law",
-      color: "#9C27B0",
-      pendingAssignments: 2,
-      description: "A postgraduate law program offering advanced legal studies with specializations in corporate and commercial law."
-    }
-  ];
-
-  return courses.find(course => course.id === courseId);
-};
-
-const generateMockAssignments = (courseId: number) => {
-  const today = new Date();
-
-  const assignmentTypes = [
-    "Essay",
-    "Research Paper",
-    "Case Study",
-    "Group Project",
-    "Presentation",
-    "Quiz",
-    "Exam"
-  ];
-
-  const subjects = [
-    "Financial Management",
-    "Marketing Management",
-    "Human Resources",
-    "Operations Management",
-    "Business Ethics",
-    "Strategic Management",
-    "Business Analytics"
-  ];
-
-  const statusOptions = ["completed", "pending", "upcoming"];
-  
-  return Array.from({ length: 8 }, (_, i) => {
-    const dueDate = new Date(today);
-    dueDate.setDate(dueDate.getDate() + (Math.floor(Math.random() * 30) - 10));
-    
-    const type = assignmentTypes[Math.floor(Math.random() * assignmentTypes.length)];
-    const subject = subjects[Math.floor(Math.random() * subjects.length)];
-    const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
-
-    return {
-      id: `${courseId}-${i + 1}`,
-      title: `${type}: ${subject}`,
-      dueDate,
-      status,
-      description: `Complete the ${type.toLowerCase()} on ${subject} as per the guidelines provided. Focus on analyzing real-world applications and demonstrate critical thinking.`,
-      maxMarks: 100,
-      marksObtained: status === "completed" ? Math.floor(Math.random() * 30) + 70 : null
-    };
-  });
-};
-
-const generateMockClassSchedule = () => {
-  const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  return weekdays.map(day => ({
-    day,
-    schedules: Array.from({ length: Math.floor(Math.random() * 2) + 1 }, (_, i) => {
-      const startHour = 9 + i * 3;
-      return {
-        id: `${day}-${i}`,
-        startTime: `${startHour}:00 ${startHour < 12 ? "AM" : "PM"}`,
-        endTime: `${startHour + 2}:00 ${(startHour + 2) < 12 ? "AM" : "PM"}`,
-        room: `Room ${100 + Math.floor(Math.random() * 20)}`,
-        professor: `Dr. ${['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'][Math.floor(Math.random() * 5)]}`
-      };
-    })
-  }));
-};
-
-const generateMockAnnouncements = (courseId: number) => {
-  const today = new Date();
-  
-  const announcementTypes = [
-    "Assignment Update", 
-    "Exam Schedule", 
-    "Class Cancellation", 
-    "Additional Resources", 
-    "Reminder", 
-    "Important Notice"
-  ];
-  
-  return Array.from({ length: 5 }, (_, i) => {
-    const date = new Date(today);
-    date.setDate(date.getDate() - Math.floor(Math.random() * 20));
-    
-    const type = announcementTypes[Math.floor(Math.random() * announcementTypes.length)];
-    
-    let message = "";
-    switch(type) {
-      case "Assignment Update":
-        message = "The deadline for the recent assignment has been extended by one week.";
-        break;
-      case "Exam Schedule":
-        message = "Mid-term exams will be held between the 15th and 20th of next month.";
-        break;
-      case "Class Cancellation":
-        message = "Classes on Friday are cancelled due to faculty development program.";
-        break;
-      case "Additional Resources":
-        message = "Additional study materials have been uploaded to the course repository.";
-        break;
-      case "Reminder":
-        message = "Don't forget to submit your assignments by the end of this week.";
-        break;
-      case "Important Notice":
-        message = "There will be a guest lecture next week by an industry expert.";
-        break;
-      default:
-        message = "Please check the course portal for important updates.";
-    }
-    
-    return {
-      id: `ann-${courseId}-${i}`,
-      date,
-      type,
-      message
-    };
-  }).sort((a, b) => b.date.getTime() - a.date.getTime());
-};
 
 const CourseDetailPage = () => {
   const { courseId } = useParams();
-  const [course, setCourse] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [assignments, setAssignments] = useState<any[]>([]);
-  const [classSchedule, setClassSchedule] = useState<any[]>([]);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
   const { toast } = useToast();
   
-  useEffect(() => {
-    if (courseId) {
-      setLoading(true);
-      
-      setTimeout(() => {
-        const fetchedCourse = getCourseById(courseId);
-        setCourse(fetchedCourse);
-        
-        if (fetchedCourse) {
-          setAssignments(generateMockAssignments(fetchedCourse.id));
-          setClassSchedule(generateMockClassSchedule());
-          setAnnouncements(generateMockAnnouncements(fetchedCourse.id));
-        }
-        
-        setLoading(false);
-      }, 500);
-    }
-  }, [courseId]);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedAssignments, setSelectedAssignments] = useState<string[]>([]);
+  const [markingIndex, setMarkingIndex] = useState<number | null>(null);
   
-  if (loading) {
-    return (
-      <PageLayout>
-        <div className="flex items-center justify-center h-96">
-          <div className="animate-pulse text-lg">Loading course details...</div>
-        </div>
-      </PageLayout>
+  // Find the course by ID or use a default
+  const course = mockCourses.find(c => c.id === courseId) || mockCourses[0];
+  
+  // Mock data for students
+  const students = [
+    { id: '1', name: 'Amit Kumar', email: 'amit.k@example.com', attendance: '95%', grade: 'A', lastActive: '2 hours ago' },
+    { id: '2', name: 'Priya Sharma', email: 'priya.s@example.com', attendance: '88%', grade: 'B+', lastActive: '1 day ago' },
+    { id: '3', name: 'Rajesh Verma', email: 'rajesh.v@example.com', attendance: '78%', grade: 'B', lastActive: '3 days ago' },
+    { id: '4', name: 'Meera Patel', email: 'meera.p@example.com', attendance: '92%', grade: 'A-', lastActive: '5 hours ago' },
+    { id: '5', name: 'Suresh Reddy', email: 'suresh.r@example.com', attendance: '85%', grade: 'B', lastActive: '2 days ago' },
+  ];
+  
+  // Mock data for assignments
+  const assignments = [
+    { 
+      id: 'a1', 
+      title: 'Mid-term Project', 
+      dueDate: '2023-06-15', 
+      status: 'Graded',
+      submissions: 23,
+      maxScore: 100,
+      avgScore: 82
+    },
+    { 
+      id: 'a2', 
+      title: 'Research Paper', 
+      dueDate: '2023-07-01', 
+      status: 'Open',
+      submissions: 18,
+      maxScore: 50,
+      avgScore: 42
+    },
+    { 
+      id: 'a3', 
+      title: 'Group Presentation', 
+      dueDate: '2023-07-10', 
+      status: 'Upcoming',
+      submissions: 0,
+      maxScore: 40,
+      avgScore: 0
+    },
+  ];
+  
+  // Mock data for materials
+  const materials = [
+    { 
+      id: 'm1', 
+      title: 'Introduction to Course', 
+      type: 'Slides', 
+      uploadDate: '2023-05-01',
+      size: '2.4 MB',
+      downloads: 45
+    },
+    { 
+      id: 'm2', 
+      title: 'Required Reading - Chapter 1-3', 
+      type: 'PDF', 
+      uploadDate: '2023-05-05',
+      size: '8.7 MB',
+      downloads: 38
+    },
+    { 
+      id: 'm3', 
+      title: 'Lecture Recording - Week 1', 
+      type: 'Video', 
+      uploadDate: '2023-05-07',
+      size: '340 MB',
+      downloads: 27
+    },
+    { 
+      id: 'm4', 
+      title: 'Lab Exercise Templates', 
+      type: 'ZIP', 
+      uploadDate: '2023-05-10',
+      size: '5.2 MB',
+      downloads: 32
+    },
+  ];
+  
+  // Mock student submissions
+  const studentSubmissions = [
+    { id: 's1', student: 'Amit Kumar', submissionDate: '2023-06-10', status: 'Graded', score: '92/100' },
+    { id: 's2', student: 'Priya Sharma', submissionDate: '2023-06-12', status: 'Graded', score: '88/100' },
+    { id: 's3', student: 'Rajesh Verma', submissionDate: '2023-06-11', status: 'Pending', score: 'N/A' },
+    { id: 's4', student: 'Meera Patel', submissionDate: '2023-06-09', status: 'Graded', score: '95/100' },
+    { id: 's5', student: 'Suresh Reddy', submissionDate: '2023-06-14', status: 'Pending', score: 'N/A' },
+  ];
+  
+  // Handle assignment marking
+  const handleMarkAssignment = (index: number) => {
+    setMarkingIndex(index);
+    // Simulate API call
+    setTimeout(() => {
+      setMarkingIndex(null);
+      
+      // Clone and update the student submissions array
+      const updatedSubmissions = [...studentSubmissions];
+      if (updatedSubmissions[index].status === 'Pending') {
+        updatedSubmissions[index].status = 'Graded';
+        updatedSubmissions[index].score = `${Math.floor(Math.random() * 11) + 85}/100`;
+      }
+      
+      toast({
+        title: "Assignment Marked",
+        description: `${updatedSubmissions[index].student}'s assignment has been graded.`,
+      });
+    }, 1500);
+  };
+  
+  // Toggle select assignment
+  const toggleSelectAssignment = (id: string) => {
+    setSelectedAssignments(prev => 
+      prev.includes(id) 
+        ? prev.filter(a => a !== id) 
+        : [...prev, id]
     );
-  }
+  };
+  
+  // Get background color class based on course color
+  const getBgColorClass = (color: string) => {
+    const colorMap: Record<string, string> = {
+      blue: 'bg-blue-50',
+      green: 'bg-green-50',
+      amber: 'bg-amber-50',
+      pink: 'bg-pink-50',
+      violet: 'bg-violet-50',
+      red: 'bg-red-50',
+      indigo: 'bg-indigo-50',
+      cyan: 'bg-cyan-50'
+    };
+    
+    return colorMap[color] || 'bg-gray-50';
+  };
+  
+  // Get border color class based on course color
+  const getBorderColorClass = (color: string) => {
+    const colorMap: Record<string, string> = {
+      blue: 'border-blue-200',
+      green: 'border-green-200',
+      amber: 'border-amber-200',
+      pink: 'border-pink-200',
+      violet: 'border-violet-200',
+      red: 'border-red-200',
+      indigo: 'border-indigo-200',
+      cyan: 'border-cyan-200'
+    };
+    
+    return colorMap[color] || 'border-gray-200';
+  };
+  
+  // Get text color class based on course color
+  const getTextColorClass = (color: string) => {
+    const colorMap: Record<string, string> = {
+      blue: 'text-blue-700',
+      green: 'text-green-700',
+      amber: 'text-amber-700',
+      pink: 'text-pink-700',
+      violet: 'text-violet-700',
+      red: 'text-red-700',
+      indigo: 'text-indigo-700',
+      cyan: 'text-cyan-700'
+    };
+    
+    return colorMap[color] || 'text-gray-700';
+  };
+  
+  // Format date string
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+  
+  // Get status badge style
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'Graded':
+        return <Badge className="bg-green-100 hover:bg-green-200 text-green-800 border-green-200">Graded</Badge>;
+      case 'Open':
+        return <Badge variant="outline" className="bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-200">Open</Badge>;
+      case 'Upcoming':
+        return <Badge variant="outline" className="bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-200">Upcoming</Badge>;
+      case 'Pending':
+        return <Badge variant="outline" className="bg-orange-100 hover:bg-orange-200 text-orange-800 border-orange-200">Pending</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
   
   if (!course) {
     return (
-      <PageLayout>
-        <div className="text-center py-10">
-          <h2 className="text-2xl font-semibold mb-4">Course Not Found</h2>
-          <p className="mb-6">Sorry, we couldn't find the course you're looking for.</p>
-          <Button asChild>
-            <Link to="/courses">Return to Course Listings</Link>
-          </Button>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Course Not Found</h1>
+          <p className="text-muted-foreground mb-4">The course you're looking for doesn't exist or has been removed.</p>
+          <Button onClick={() => window.history.back()}>Go Back</Button>
         </div>
-      </PageLayout>
+      </div>
     );
   }
   
-  const handleEnrollClick = () => {
-    toast({
-      title: "Enrollment Successful",
-      description: `You have successfully enrolled in ${course.title}`,
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
-    });
-  };
-
-  const groupedAssignments = assignments.reduce((acc, assignment) => {
-    if (!acc[assignment.status]) {
-      acc[assignment.status] = [];
-    }
-    acc[assignment.status].push(assignment);
-    return acc;
-  }, { completed: [], pending: [], upcoming: [] } as Record<string, any[]>);
-
   return (
-    <PageLayout backgroundImage="/lovable-uploads/7afce98d-f21c-40c0-a054-0b0431ca10c9.png">
-      <div className="animate-fade-in">
-        <div className="mb-6">
-          <Link to="/courses" className="inline-flex items-center text-primary hover:text-primary/80 mb-4 bg-white/90 px-3 py-1 rounded-md">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back to Courses
-          </Link>
-          
-          <Card className="bg-white/95 backdrop-blur-lg shadow-lg">
-            <CardHeader className="pb-3">
-              <div className="flex flex-wrap items-start justify-between">
-                <div>
-                  <CardTitle className="text-2xl font-bold">{course.title}</CardTitle>
-                  <CardDescription className="mt-1">{course.subject}</CardDescription>
-                </div>
-                <Badge 
-                  className="mt-1" 
-                  style={{ backgroundColor: course.color, color: 'white' }}
-                >
-                  {course.subject}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">{course.description}</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <Card>
-                  <CardContent className="p-4 flex items-center">
-                    <User className="h-5 w-5 mr-2 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Instructor</p>
-                      <p className="font-medium">{course.instructor}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4 flex items-center">
-                    <FileText className="h-5 w-5 mr-2 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Assignments</p>
-                      <p className="font-medium">
-                        {assignments.length} ({course.pendingAssignments} pending)
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4 flex items-center">
-                    <Calendar className="h-5 w-5 mr-2 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Schedule</p>
-                      <p className="font-medium">{classSchedule.length} days per week</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4 flex items-center">
-                    <Clock className="h-5 w-5 mr-2 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Duration</p>
-                      <p className="font-medium">4 Semesters</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                className="w-full md:w-auto bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md"
-                onClick={handleEnrollClick}
-              >
-                Enroll Now
-              </Button>
-            </CardFooter>
-          </Card>
+    <div>
+      <div className={`p-6 rounded-lg mb-6 border ${getBgColorClass(course.color)} ${getBorderColorClass(course.color)}`}>
+        <div className="flex flex-col md:flex-row justify-between">
+          <div className="mb-4 md:mb-0">
+            <h1 className={`text-2xl font-bold mb-1 ${getTextColorClass(course.color)}`}>
+              {course.title}
+            </h1>
+            <p className="text-muted-foreground mb-2">
+              Instructor: {course.instructor}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              <Badge variant="outline">{course.subject}</Badge>
+              <Badge variant="outline">Spring 2023</Badge>
+              <Badge variant="outline">3 Credits</Badge>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Course Syllabus
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Join Meeting
+            </Button>
+          </div>
         </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-muted-foreground">Students</span>
+                <span className="text-2xl font-bold">{students.length}</span>
+              </div>
+              <div className={`p-3 rounded-full ${getBgColorClass(course.color)}`}>
+                <Users className={`h-5 w-5 ${getTextColorClass(course.color)}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
-        <CourseChart courseId={parseInt(courseId || "1", 10)} />
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-muted-foreground">Assignments</span>
+                <span className="text-2xl font-bold">{assignments.length}</span>
+              </div>
+              <div className={`p-3 rounded-full ${getBgColorClass(course.color)}`}>
+                <FileText className={`h-5 w-5 ${getTextColorClass(course.color)}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
-        <div className="mt-6">
-          <Tabs defaultValue="assignments" className="w-full">
-            <TabsList className="grid grid-cols-3 mb-6">
-              <TabsTrigger value="assignments">Assignments</TabsTrigger>
-              <TabsTrigger value="schedule">Schedule</TabsTrigger>
-              <TabsTrigger value="announcements">Announcements</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="assignments" className="mt-0 space-y-4">
-              <Card className="bg-white/95 backdrop-blur-lg shadow-lg">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-muted-foreground">Resources</span>
+                <span className="text-2xl font-bold">{materials.length}</span>
+              </div>
+              <div className={`p-3 rounded-full ${getBgColorClass(course.color)}`}>
+                <BookOpen className={`h-5 w-5 ${getTextColorClass(course.color)}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-muted-foreground">Avg. Grade</span>
+                <span className="text-2xl font-bold">B+</span>
+              </div>
+              <div className={`p-3 rounded-full ${getBgColorClass(course.color)}`}>
+                <BarChart3 className={`h-5 w-5 ${getTextColorClass(course.color)}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-6">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="students">Students</TabsTrigger>
+          <TabsTrigger value="assignments">Assignments</TabsTrigger>
+          <TabsTrigger value="materials">Materials</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="overview">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-xl">Assignments</CardTitle>
+                  <CardTitle>Course Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="pending">
-                    <TabsList className="mb-4 grid grid-cols-3">
-                      <TabsTrigger value="pending" className="relative">
-                        Pending
-                        {groupedAssignments.pending.length > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                            {groupedAssignments.pending.length}
-                          </span>
-                        )}
-                      </TabsTrigger>
-                      <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-                      <TabsTrigger value="completed">Completed</TabsTrigger>
-                    </TabsList>
-                    
-                    {['pending', 'upcoming', 'completed'].map((status) => (
-                      <TabsContent key={status} value={status} className="mt-0 space-y-3">
-                        {groupedAssignments[status].length > 0 ? (
-                          groupedAssignments[status].map((assignment) => (
-                            <div 
-                              key={assignment.id} 
-                              className="p-4 border rounded-lg assignment-item flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-                            >
-                              <div className="flex-1">
-                                <h3 className="font-medium">{assignment.title}</h3>
-                                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                  {assignment.description}
-                                </p>
-                                <div className="flex items-center mt-2">
-                                  <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
-                                  <span className="text-sm">
-                                    Due: {formatDate(assignment.dueDate)}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-2 md:space-x-4">
-                                {status === 'completed' && assignment.marksObtained && (
-                                  <div className="bg-green-50 border border-green-200 px-3 py-1 rounded text-green-800 font-medium text-sm">
-                                    Score: {assignment.marksObtained}/{assignment.maxMarks}
-                                  </div>
-                                )}
-                                <Badge 
-                                  variant={
-                                    status === 'completed' ? "default" :
-                                    status === 'pending' ? "destructive" : "outline"
-                                  }
-                                  className={`capitalize ${status === 'completed' ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                                >
-                                  {status === 'completed' ? (
-                                    <><CheckCircle2 className="h-3 w-3 mr-1" /> {status}</>
-                                  ) : status === 'pending' ? (
-                                    <><XCircle className="h-3 w-3 mr-1" /> {status}</>
-                                  ) : (
-                                    <><Calendar className="h-3 w-3 mr-1" /> {status}</>
-                                  )}
-                                </Badge>
-                                <Button variant="outline" size="sm">
-                                  View Details
-                                </Button>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-center py-8 text-muted-foreground">No {status} assignments.</p>
-                        )}
-                      </TabsContent>
-                    ))}
-                  </Tabs>
+                  <p className="text-muted-foreground">
+                    This course provides a comprehensive introduction to {course.subject}. 
+                    Students will explore fundamental concepts, theories, and practical applications
+                    through lectures, discussions, and hands-on projects. The curriculum is designed
+                    to develop critical thinking skills and prepare students for advanced study in the field.
+                  </p>
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="schedule" className="mt-0">
-              <Card className="bg-white/95 backdrop-blur-lg shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-xl">Weekly Schedule</CardTitle>
+              
+              <Card className="mt-6">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Recent Announcements</CardTitle>
+                  <Button size="sm" variant="outline">View All</Button>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-4">
-                    {classSchedule.map((daySchedule) => (
-                      <Card key={daySchedule.day} className={daySchedule.day === 'Saturday' || daySchedule.day === 'Sunday' ? "border-dashed" : ""}>
-                        <CardHeader className="p-4 pb-2">
-                          <CardTitle className="text-lg">{daySchedule.day}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0">
-                          {daySchedule.schedules.length > 0 ? (
-                            <div className="space-y-3">
-                              {daySchedule.schedules.map((schedule) => (
-                                <div key={schedule.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 bg-muted/50 rounded-lg">
-                                  <div className="flex items-center mb-2 md:mb-0">
-                                    <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
-                                    <span>{schedule.startTime} - {schedule.endTime}</span>
-                                  </div>
-                                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
-                                    <div className="flex items-center">
-                                      <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                                      <span>{schedule.professor}</span>
-                                    </div>
-                                    <Badge variant="outline">{schedule.room}</Badge>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="text-center py-2 text-muted-foreground">No classes scheduled</p>
-                          )}
-                        </CardContent>
-                      </Card>
+                  <div className="space-y-4">
+                    <div className="border-b pb-4">
+                      <h3 className="font-medium mb-1">Midterm Project Guidelines</h3>
+                      <div className="flex items-center mb-2">
+                        <Clock className="h-3 w-3 mr-1 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">Posted 2 days ago</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        The midterm project guidelines have been posted. Please review the requirements 
+                        and deadlines carefully. Office hours this week will be dedicated to project Q&A.
+                      </p>
+                    </div>
+                    
+                    <div className="border-b pb-4">
+                      <h3 className="font-medium mb-1">Guest Lecturer Next Week</h3>
+                      <div className="flex items-center mb-2">
+                        <Clock className="h-3 w-3 mr-1 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">Posted 5 days ago</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        We will have a guest lecturer next Thursday. Dr. Sharma from the National Research 
+                        Institute will be presenting her recent work. Attendance is mandatory.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upcoming Deadlines</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {assignments.map(assignment => (
+                      <div key={assignment.id} className="flex items-start pb-4 last:pb-0 border-b last:border-0">
+                        <div className={`p-2 rounded-full mr-3 ${getBgColorClass(course.color)}`}>
+                          <CalendarIcon className={`h-4 w-4 ${getTextColorClass(course.color)}`} />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm">{assignment.title}</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Due {formatDate(assignment.dueDate)}
+                          </p>
+                        </div>
+                        <div className="ml-auto">
+                          {getStatusBadge(assignment.status)}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="announcements" className="mt-0">
-              <Card className="bg-white/95 backdrop-blur-lg shadow-lg">
+              
+              <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle className="text-xl">Announcements</CardTitle>
+                  <CardTitle>Class Schedule</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {announcements.length > 0 ? (
-                    <div className="space-y-4">
-                      {announcements.map((announcement) => (
-                        <Card key={announcement.id} className="staggered-item">
-                          <CardHeader className="p-4 pb-2">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between">
-                              <CardTitle className="text-base">{announcement.type}</CardTitle>
-                              <p className="text-sm text-muted-foreground">
-                                {formatDate(announcement.date)}
-                              </p>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="p-4 pt-0">
-                            <p>{announcement.message}</p>
-                          </CardContent>
-                        </Card>
-                      ))}
+                  <div className="space-y-3">
+                    <div className="flex justify-between pb-2 border-b">
+                      <div>
+                        <p className="font-medium">Lectures</p>
+                        <p className="text-sm text-muted-foreground">Mon, Wed</p>
+                      </div>
+                      <p className="text-sm">10:00 AM - 11:30 AM</p>
                     </div>
-                  ) : (
-                    <p className="text-center py-8 text-muted-foreground">No announcements at this time.</p>
-                  )}
+                    <div className="flex justify-between pb-2 border-b">
+                      <div>
+                        <p className="font-medium">Lab Sessions</p>
+                        <p className="text-sm text-muted-foreground">Friday</p>
+                      </div>
+                      <p className="text-sm">2:00 PM - 4:00 PM</p>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="font-medium">Office Hours</p>
+                        <p className="text-sm text-muted-foreground">Tuesday</p>
+                      </div>
+                      <p className="text-sm">1:00 PM - 3:00 PM</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
-    </PageLayout>
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="students">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Students Enrolled</CardTitle>
+              <div className="flex items-center gap-2">
+                <div className="relative w-60">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search students..."
+                    className="pl-8"
+                  />
+                </div>
+                <Button variant="outline" size="sm">
+                  Export List
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Attendance</TableHead>
+                    <TableHead>Current Grade</TableHead>
+                    <TableHead>Last Active</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {students.map(student => (
+                    <TableRow key={student.id}>
+                      <TableCell className="font-medium">{student.name}</TableCell>
+                      <TableCell>{student.email}</TableCell>
+                      <TableCell>{student.attendance}</TableCell>
+                      <TableCell>{student.grade}</TableCell>
+                      <TableCell>{student.lastActive}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>View Profile</DropdownMenuItem>
+                            <DropdownMenuItem>Send Message</DropdownMenuItem>
+                            <DropdownMenuItem>View Submissions</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="assignments">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold mb-1">Course Assignments</h2>
+              <p className="text-muted-foreground">Manage and track student assignments</p>
+            </div>
+            <div className="flex gap-2">
+              <Button>Create Assignment</Button>
+              {selectedAssignments.length > 0 && (
+                <Button variant="outline">
+                  Edit Selected ({selectedAssignments.length})
+                </Button>
+              )}
+            </div>
+          </div>
+          
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40px]"></TableHead>
+                    <TableHead>Assignment</TableHead>
+                    <TableHead>Due Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Submissions</TableHead>
+                    <TableHead>Score</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {assignments.map(assignment => (
+                    <TableRow key={assignment.id}>
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          checked={selectedAssignments.includes(assignment.id)}
+                          onChange={() => toggleSelectAssignment(assignment.id)}
+                          className="h-4 w-4 rounded border-gray-300"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">{assignment.title}</TableCell>
+                      <TableCell>{formatDate(assignment.dueDate)}</TableCell>
+                      <TableCell>{getStatusBadge(assignment.status)}</TableCell>
+                      <TableCell>
+                        {assignment.submissions} / {students.length}
+                      </TableCell>
+                      <TableCell>
+                        {assignment.status !== 'Upcoming' ? (
+                          <div className="flex flex-col">
+                            <span>{assignment.avgScore} / {assignment.maxScore}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {Math.round((assignment.avgScore / assignment.maxScore) * 100)}%
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>View Details</DropdownMenuItem>
+                            <DropdownMenuItem>Edit Assignment</DropdownMenuItem>
+                            <DropdownMenuItem>View Submissions</DropdownMenuItem>
+                            <DropdownMenuItem>Download All</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          
+          <h3 className="text-lg font-bold mt-8 mb-4">Recent Submissions</h3>
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Submitted On</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Score</TableHead>
+                    <TableHead className="w-[100px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {studentSubmissions.map((submission, index) => (
+                    <TableRow key={submission.id}>
+                      <TableCell className="font-medium">{submission.student}</TableCell>
+                      <TableCell>{formatDate(submission.submissionDate)}</TableCell>
+                      <TableCell>
+                        {submission.status === 'Graded' ? (
+                          <div className="flex items-center gap-1">
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                            <span>Graded</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <AlertCircle className="h-4 w-4 text-amber-500" />
+                            <span>Pending</span>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>{submission.score}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button 
+                            size="sm"
+                            variant="ghost" 
+                            className="h-8 w-8 p-0"
+                          >
+                            <Download className="h-4 w-4" />
+                            <span className="sr-only">Download</span>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0"
+                            disabled={markingIndex === index}
+                            onClick={() => handleMarkAssignment(index)}
+                          >
+                            {markingIndex === index ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                {submission.status === 'Graded' ? (
+                                  <CheckCircle2 className="h-4 w-4" />
+                                ) : (
+                                  <Upload className="h-4 w-4" />
+                                )}
+                              </>
+                            )}
+                            <span className="sr-only">
+                              {submission.status === 'Graded' ? 'Update Grade' : 'Mark Assignment'}
+                            </span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="materials">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold mb-1">Course Materials</h2>
+              <p className="text-muted-foreground">Access lecture notes, readings, and resources</p>
+            </div>
+            <div className="flex gap-2">
+              <Button>Upload Material</Button>
+              <Button variant="outline">Create Folder</Button>
+            </div>
+          </div>
+          
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Upload Date</TableHead>
+                    <TableHead>Size</TableHead>
+                    <TableHead>Downloads</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {materials.map(material => (
+                    <TableRow key={material.id}>
+                      <TableCell className="font-medium">{material.title}</TableCell>
+                      <TableCell>{material.type}</TableCell>
+                      <TableCell>{formatDate(material.uploadDate)}</TableCell>
+                      <TableCell>{material.size}</TableCell>
+                      <TableCell>{material.downloads}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Download</DropdownMenuItem>
+                            <DropdownMenuItem>Rename</DropdownMenuItem>
+                            <DropdownMenuItem>Move</DropdownMenuItem>
+                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          
+          <div className="mt-6">
+            <h3 className="text-lg font-bold mb-4">Upload New Material</h3>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <label htmlFor="title" className="text-sm font-medium">Title</label>
+                    <Input id="title" placeholder="Enter material title" />
+                  </div>
+                  <div className="grid gap-2">
+                    <label htmlFor="description" className="text-sm font-medium">Description</label>
+                    <Textarea id="description" placeholder="Enter a brief description" />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">File</label>
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                      <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm mb-1">Drag and drop files here or click to browse</p>
+                      <p className="text-xs text-muted-foreground">Max file size: 100MB</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button>Upload Material</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

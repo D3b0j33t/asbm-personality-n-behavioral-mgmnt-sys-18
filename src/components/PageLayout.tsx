@@ -38,17 +38,14 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         </>
       )}
       
-      <div className="flex h-full">
-        {/* Main content area */}
-        <div className="flex flex-col w-full">
-          <NavigationHeader toggleSidebar={toggleSidebar} />
-          
-          <main className="flex-1 p-4 md:p-6 mt-16 z-10">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
-          </main>
-        </div>
+      <div className="flex flex-col h-screen">
+        <NavigationHeader toggleSidebar={toggleSidebar} />
+        
+        <main className="flex-1 p-4 md:p-6 pt-20 z-10">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );
