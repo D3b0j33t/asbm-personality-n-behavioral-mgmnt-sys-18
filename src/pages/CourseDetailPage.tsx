@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +10,6 @@ import { useToast } from '@/hooks/use-toast';
 import CourseChart from '@/components/charts/CourseChart';
 import PageLayout from '@/components/PageLayout';
 
-// Mock course data
 const getCourseById = (id: string | number) => {
   const courseId = typeof id === 'string' ? parseInt(id, 10) : id;
   const courses = [
@@ -128,7 +126,6 @@ const getCourseById = (id: string | number) => {
   return courses.find(course => course.id === courseId);
 };
 
-// Mock assignment data
 const generateMockAssignments = (courseId: number) => {
   const today = new Date();
 
@@ -156,7 +153,6 @@ const generateMockAssignments = (courseId: number) => {
   
   return Array.from({ length: 8 }, (_, i) => {
     const dueDate = new Date(today);
-    // Randomize due dates between -10 days to +20 days from today
     dueDate.setDate(dueDate.getDate() + (Math.floor(Math.random() * 30) - 10));
     
     const type = assignmentTypes[Math.floor(Math.random() * assignmentTypes.length)];
@@ -170,12 +166,11 @@ const generateMockAssignments = (courseId: number) => {
       status,
       description: `Complete the ${type.toLowerCase()} on ${subject} as per the guidelines provided. Focus on analyzing real-world applications and demonstrate critical thinking.`,
       maxMarks: 100,
-      marksObtained: status === "completed" ? Math.floor(Math.random() * 30) + 70 : null // 70-100 for completed
+      marksObtained: status === "completed" ? Math.floor(Math.random() * 30) + 70 : null
     };
   });
 };
 
-// Mock class schedule data
 const generateMockClassSchedule = () => {
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   return weekdays.map(day => ({
@@ -193,7 +188,6 @@ const generateMockClassSchedule = () => {
   }));
 };
 
-// Announcements
 const generateMockAnnouncements = (courseId: number) => {
   const today = new Date();
   
@@ -208,7 +202,6 @@ const generateMockAnnouncements = (courseId: number) => {
   
   return Array.from({ length: 5 }, (_, i) => {
     const date = new Date(today);
-    // Randomize dates between -20 days to 0 days from today
     date.setDate(date.getDate() - Math.floor(Math.random() * 20));
     
     const type = announcementTypes[Math.floor(Math.random() * announcementTypes.length)];
@@ -243,7 +236,7 @@ const generateMockAnnouncements = (courseId: number) => {
       type,
       message
     };
-  }).sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date descending
+  }).sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
 const CourseDetailPage = () => {
@@ -259,13 +252,11 @@ const CourseDetailPage = () => {
     if (courseId) {
       setLoading(true);
       
-      // Simulate API call with delay
       setTimeout(() => {
         const fetchedCourse = getCourseById(courseId);
         setCourse(fetchedCourse);
         
         if (fetchedCourse) {
-          // Generate mock data for the course
           setAssignments(generateMockAssignments(fetchedCourse.id));
           setClassSchedule(generateMockClassSchedule());
           setAnnouncements(generateMockAnnouncements(fetchedCourse.id));
@@ -315,7 +306,6 @@ const CourseDetailPage = () => {
     });
   };
 
-  // Group assignments by status
   const groupedAssignments = assignments.reduce((acc, assignment) => {
     if (!acc[assignment.status]) {
       acc[assignment.status] = [];
@@ -463,10 +453,10 @@ const CourseDetailPage = () => {
                                 )}
                                 <Badge 
                                   variant={
-                                    status === 'completed' ? "success" :
+                                    status === 'completed' ? "default" :
                                     status === 'pending' ? "destructive" : "outline"
                                   }
-                                  className="capitalize"
+                                  className={`capitalize ${status === 'completed' ? 'bg-green-600 hover:bg-green-700' : ''}`}
                                 >
                                   {status === 'completed' ? (
                                     <><CheckCircle2 className="h-3 w-3 mr-1" /> {status}</>
