@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from 'recharts';
 
 // Mock behavioral incidents data for demonstration
 const behavioralIncidentsData = [
@@ -16,28 +16,40 @@ const behavioralIncidentsData = [
 
 const BehaviorChart = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Behavioral Incidents</CardTitle>
+    <Card className="shadow-md border-none">
+      <CardHeader className="bg-gray-50 border-b pb-3">
+        <CardTitle className="text-xl">Behavioral Incidents</CardTitle>
         <CardDescription>Monthly record of behavioral incidents</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-80 w-full">
+      <CardContent className="pt-6">
+        <div className="h-[400px] w-full">
           <ChartContainer 
             config={{
-              minor: { color: "#F4B400" },
-              major: { color: "#DB4437" },
+              minor: { color: "#F4B400", label: "Minor Incidents" },
+              major: { color: "#DB4437", label: "Major Incidents" },
             }}
           >
-            <BarChart data={behavioralIncidentsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis allowDecimals={false} />
-              <Tooltip content={<ChartTooltipContent />} />
-              <Legend />
-              <Bar dataKey="minor" name="Minor Incidents" fill="#F4B400" />
-              <Bar dataKey="major" name="Major Incidents" fill="#DB4437" />
-            </BarChart>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={behavioralIncidentsData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis allowDecimals={false} />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Legend />
+                <Bar 
+                  dataKey="minor" 
+                  name="Minor Incidents" 
+                  fill="#F4B400"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey="major" 
+                  name="Major Incidents" 
+                  fill="#DB4437"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </ChartContainer>
         </div>
       </CardContent>

@@ -10,9 +10,9 @@ const Reports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('semester');
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navigation />
-      <main className="flex-1 p-6 bg-gray-50">
+      <main className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
             <div>

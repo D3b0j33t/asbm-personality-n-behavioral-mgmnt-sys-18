@@ -54,15 +54,15 @@ const recentIncidents = [
 
 const BehavioralIncidents = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Behavioral Incidents</CardTitle>
+    <Card className="shadow-md border-none">
+      <CardHeader className="bg-gray-50 border-b pb-3">
+        <CardTitle className="text-xl">Recent Behavioral Incidents</CardTitle>
         <CardDescription>List of recent behavioral notes and actions</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:bg-transparent">
               <TableHead>Date</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Description</TableHead>
@@ -71,7 +71,7 @@ const BehavioralIncidents = () => {
           </TableHeader>
           <TableBody>
             {recentIncidents.map((incident) => (
-              <TableRow key={incident.id}>
+              <TableRow key={incident.id} className="hover:bg-gray-50">
                 <TableCell>{new Date(incident.date).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${

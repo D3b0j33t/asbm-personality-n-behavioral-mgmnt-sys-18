@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { format, addMonths, subMonths, isSameDay } from 'date-fns';
+import { format, addMonths, subMonths, isSameDay, addDays } from 'date-fns';
 import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,33 +14,33 @@ const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   
-  // Mock data for calendar events
+  // Mock data for calendar events - this would come from a database in the future
   const events = [
     {
       id: 'e1',
       title: 'Python Basics Assignment Due',
-      date: '2023-09-22',
+      date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 15),
       course: 'Introduction to Computer Science',
       color: '#4285F4',
     },
     {
       id: 'e2',
       title: 'Business Case Study Presentation',
-      date: '2023-09-25',
+      date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
       course: 'Business Administration',
       color: '#0F9D58',
     },
     {
       id: 'e3',
       title: 'Data Structures Implementation Due',
-      date: '2023-10-05',
+      date: addDays(new Date(currentDate.getFullYear(), currentDate.getMonth(), 25), 5),
       course: 'Introduction to Computer Science',
       color: '#4285F4',
     },
     {
       id: 'e4',
       title: 'Financial Report Analysis',
-      date: '2023-09-28',
+      date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 22),
       course: 'Financial Accounting',
       color: '#DB4437',
     },
@@ -62,14 +62,13 @@ const CalendarPage = () => {
   
   // Filter events for the selected date
   const selectedDateEvents = events.filter(event => {
-    const eventDate = new Date(event.date);
-    return selectedDate && isSameDay(eventDate, selectedDate);
+    return selectedDate && isSameDay(event.date, selectedDate);
   });
   
   // Filter upcoming events (all events from today onwards)
   const upcomingEvents = events
-    .filter(event => new Date(event.date) >= new Date())
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .filter(event => event.date >= new Date())
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -101,14 +100,14 @@ const CalendarPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex justify-center p-2">
+                <div className="flex justify-center">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     month={currentDate}
                     onMonthChange={setCurrentDate}
-                    className="rounded-md border"
+                    className="rounded-md border shadow-sm bg-white"
                     showOutsideDays
                   />
                 </div>
@@ -118,12 +117,12 @@ const CalendarPage = () => {
                     <h3 className="font-medium mb-2">
                       Events on {format(selectedDate, 'MMMM d, yyyy')}
                     </h3>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {selectedDateEvents.length > 0 ? (
                         selectedDateEvents.map((event) => (
                           <div 
                             key={event.id} 
-                            className="p-3 rounded-md" 
+                            className="p-3 rounded-md transition-all hover:shadow-md" 
                             style={{ backgroundColor: `${event.color}15`, borderLeft: `3px solid ${event.color}` }}
                           >
                             <p className="font-medium">{event.title}</p>
@@ -148,24 +147,24 @@ const CalendarPage = () => {
             </Card>
             
             {(!isMobile || (isMobile && !selectedDate)) && (
-              <Card>
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
-                  <CardTitle>Upcoming Events</CardTitle>
+                  <CardTitle className="text-xl">Upcoming Events</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {upcomingEvents.length > 0 ? (
                     upcomingEvents.map((event) => (
                       <div 
                         key={event.id} 
-                        className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer"
-                        onClick={() => setSelectedDate(new Date(event.date))}
+                        className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                        onClick={() => setSelectedDate(event.date)}
                       >
-                        <div className="w-10 text-center">
+                        <div className="w-10 h-10 flex flex-col items-center justify-center bg-primary/10 rounded-md">
                           <div className="text-xs text-muted-foreground">
-                            {new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}
+                            {format(event.date, 'MMM')}
                           </div>
                           <div className="text-lg font-bold">
-                            {new Date(event.date).getDate()}
+                            {format(event.date, 'd')}
                           </div>
                         </div>
                         <div>
