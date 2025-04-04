@@ -5,6 +5,7 @@ import AdminPanel from './pages/AdminPanel';
 import CourseListingPage from './pages/CourseListingPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import StudentAnalytics from './pages/StudentAnalytics';
+import StudentDetail from './pages/StudentDetail';
 
 // Define routes configuration
 export const routes = [
@@ -27,6 +28,10 @@ export const routes = [
   {
     path: '/studentanalytics',
     element: <StudentAnalytics />
+  },
+  {
+    path: '/student/:studentId',
+    element: <StudentDetail />
   },
   {
     // Fallback route - redirect to dashboard if no match

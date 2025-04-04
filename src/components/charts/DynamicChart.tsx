@@ -147,9 +147,7 @@ const DynamicChart: React.FC<ChartProps> = ({
           <ResponsiveContainer width="100%" height={height}>
             <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="80%" barSize={10} data={data}>
               <RadialBar
-                minAngle={15}
                 background
-                clockWise
                 dataKey="value"
                 label={{ position: 'insideStart', fill: '#666', fontSize: 12 }}
               >

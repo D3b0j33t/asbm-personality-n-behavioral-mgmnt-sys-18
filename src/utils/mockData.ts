@@ -1,4 +1,3 @@
-
 export interface Course {
   id: string;
   title: string;
@@ -21,6 +20,18 @@ export interface Student {
   avatar: string;
   behavioralIncidents: any[];
   testimonial?: string;
+  email?: string;
+  participationScore?: number;
+  strengths?: string[];
+  areasOfImprovement?: string[];
+  counselorNotes?: string;
+  personalityTraits?: {
+    openness: number;
+    conscientiousness: number;
+    extraversion: number;
+    agreeableness: number;
+    neuroticism: number;
+  };
 }
 
 export interface Teacher {
@@ -91,7 +102,6 @@ export interface UniversityInfo {
   aboutText: string;
 }
 
-// Courses data
 export const mockCourses: Course[] = [
   {
     id: "1",
@@ -203,7 +213,6 @@ export const mockCourses: Course[] = [
   }
 ];
 
-// Students data
 export const mockStudents: Student[] = [
   {
     id: "1",
@@ -216,7 +225,19 @@ export const mockStudents: Student[] = [
     academicScore: 90,
     avatar: "https://i.pravatar.cc/150?u=1",
     behavioralIncidents: [],
-    testimonial: "ASBM University provided an excellent platform for holistic growth and development as it has excellent infrastructure and student-friendly amenities. One can always see the team of committed faculty striving hard in excelling the students in all dimensions."
+    testimonial: "ASBM University provided an excellent platform for holistic growth and development as it has excellent infrastructure and student-friendly amenities. One can always see the team of committed faculty striving hard in excelling the students in all dimensions.",
+    email: "rajesh.das@student.asbm.ac.in",
+    participationScore: 85,
+    strengths: ["Communication", "Leadership", "Critical Thinking"],
+    areasOfImprovement: ["Time Management", "Delegation"],
+    counselorNotes: "Rajesh shows excellent potential in leadership roles. Recommend for placement preparation workshops.",
+    personalityTraits: {
+      openness: 85,
+      conscientiousness: 78,
+      extraversion: 90,
+      agreeableness: 82,
+      neuroticism: 45
+    }
   },
   {
     id: "2",
@@ -229,7 +250,19 @@ export const mockStudents: Student[] = [
     academicScore: 82,
     avatar: "https://i.pravatar.cc/150?u=2",
     behavioralIncidents: [],
-    testimonial: "ASBM University is a place of learning, fun and many such life preaching activities. Studying for two years at this Institute has helped me to grow professionally and individually."
+    testimonial: "ASBM University is a place of learning, fun and many such life preaching activities. Studying for two years at this Institute has helped me to grow professionally and individually.",
+    email: "subrat.barla@student.asbm.ac.in",
+    participationScore: 78,
+    strengths: ["Analytical Skills", "Research", "Problem Solving"],
+    areasOfImprovement: ["Public Speaking", "Networking"],
+    counselorNotes: "Subrat excels in analytical work but needs encouragement for more class participation.",
+    personalityTraits: {
+      openness: 75,
+      conscientiousness: 88,
+      extraversion: 65,
+      agreeableness: 80,
+      neuroticism: 55
+    }
   },
   {
     id: "3",
@@ -242,7 +275,19 @@ export const mockStudents: Student[] = [
     academicScore: 90,
     avatar: "https://i.pravatar.cc/150?u=3",
     behavioralIncidents: [],
-    testimonial: "The educational experience at ASBM University is one of the best that I have ever had in my life. I would thank all the teaching and non-teaching staff for their efforts."
+    testimonial: "The educational experience at ASBM University is one of the best that I have ever had in my life. I would thank all the teaching and non-teaching staff for their efforts.",
+    email: "anmol.acharya@student.asbm.ac.in",
+    participationScore: 80,
+    strengths: ["Teamwork", "Creativity", "Problem Solving"],
+    areasOfImprovement: ["Presentation Skills", "Leadership"],
+    counselorNotes: "Anmol is a team player and has shown great leadership skills. Recommend for leadership development workshops.",
+    personalityTraits: {
+      openness: 80,
+      conscientiousness: 75,
+      extraversion: 85,
+      agreeableness: 78,
+      neuroticism: 50
+    }
   },
   {
     id: "4",
@@ -255,7 +300,19 @@ export const mockStudents: Student[] = [
     academicScore: 85,
     avatar: "https://i.pravatar.cc/150?u=4",
     behavioralIncidents: [],
-    testimonial: "ASBM University stood tall and true to its repute and legacy. The placement and industry connect team worked day in and out, were robust and proactive."
+    testimonial: "ASBM University stood tall and true to its repute and legacy. The placement and industry connect team worked day in and out, were robust and proactive.",
+    email: "jaya.satpathy@student.asbm.ac.in",
+    participationScore: 82,
+    strengths: ["Networking", "Public Speaking", "Teamwork"],
+    areasOfImprovement: ["Critical Thinking", "Adaptability"],
+    counselorNotes: "Jaya is a strong networker and has excellent public speaking skills. Recommend for public speaking workshops.",
+    personalityTraits: {
+      openness: 78,
+      conscientiousness: 80,
+      extraversion: 82,
+      agreeableness: 75,
+      neuroticism: 55
+    }
   },
   {
     id: "5",
@@ -268,7 +325,19 @@ export const mockStudents: Student[] = [
     academicScore: 87,
     avatar: "https://i.pravatar.cc/150?u=5",
     behavioralIncidents: [],
-    testimonial: "Campus life at ASBM guided me and provided me with a good platform for my career. All credit goes to all the faculty members who supported us throughout."
+    testimonial: "Campus life at ASBM guided me and provided me with a good platform for my career. All credit goes to all the faculty members who supported us throughout.",
+    email: "amlan.jena@student.asbm.ac.in",
+    participationScore: 84,
+    strengths: ["Leadership", "Problem Solving", "Creativity"],
+    areasOfImprovement: ["Time Management", "Delegation"],
+    counselorNotes: "Amlan is a strong leader and problem solver. Recommend for leadership development workshops.",
+    personalityTraits: {
+      openness: 82,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 50
+    }
   },
   {
     id: "6",
@@ -281,7 +350,19 @@ export const mockStudents: Student[] = [
     academicScore: 89,
     avatar: "https://i.pravatar.cc/150?u=6",
     behavioralIncidents: [],
-    testimonial: "The ASBM university is one of the best B Schools in Bhubaneshwar, Odisha."
+    testimonial: "The ASBM university is one of the best B Schools in Bhubaneshwar, Odisha.",
+    email: "sabyasachi.nanda@student.asbm.ac.in",
+    participationScore: 86,
+    strengths: ["Analytical Skills", "Teamwork", "Creativity"],
+    areasOfImprovement: ["Public Speaking", "Adaptability"],
+    counselorNotes: "Sabyasachi is a strong analytical thinker and team player. Recommend for public speaking workshops.",
+    personalityTraits: {
+      openness: 84,
+      conscientiousness: 80,
+      extraversion: 78,
+      agreeableness: 75,
+      neuroticism: 55
+    }
   },
   {
     id: "7",
@@ -294,7 +375,19 @@ export const mockStudents: Student[] = [
     academicScore: 86,
     avatar: "https://i.pravatar.cc/150?u=7",
     behavioralIncidents: [],
-    testimonial: "The learning environment and faculty support at ASBM helped me grow both academically and personally. The workshops and seminars were especially enriching."
+    testimonial: "The learning environment and faculty support at ASBM helped me grow both academically and personally. The workshops and seminars were especially enriching.",
+    email: "sasmita.mohanty@student.asbm.ac.in",
+    participationScore: 88,
+    strengths: ["Leadership", "Problem Solving", "Creativity"],
+    areasOfImprovement: ["Time Management", "Delegation"],
+    counselorNotes: "Sasmita is a strong leader and problem solver. Recommend for leadership development workshops.",
+    personalityTraits: {
+      openness: 86,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 50
+    }
   },
   {
     id: "8",
@@ -307,7 +400,19 @@ export const mockStudents: Student[] = [
     academicScore: 84,
     avatar: "https://i.pravatar.cc/150?u=8",
     behavioralIncidents: [],
-    testimonial: "ASBM gave me the confidence to excel in group discussions, interviews, and corporate communication. The mock placement drills were very helpful."
+    testimonial: "ASBM gave me the confidence to excel in group discussions, interviews, and corporate communication. The mock placement drills were very helpful.",
+    email: "rohan.pradhan@student.asbm.ac.in",
+    participationScore: 87,
+    strengths: ["Communication", "Leadership", "Problem Solving"],
+    areasOfImprovement: ["Public Speaking", "Adaptability"],
+    counselorNotes: "Rohan is a strong communicator and leader. Recommend for public speaking workshops.",
+    personalityTraits: {
+      openness: 88,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 55
+    }
   },
   {
     id: "9",
@@ -320,7 +425,19 @@ export const mockStudents: Student[] = [
     academicScore: 92,
     avatar: "https://i.pravatar.cc/150?u=9",
     behavioralIncidents: [],
-    testimonial: "ASBM University truly nurtures its students. I've been able to develop leadership, communication and analytical skills thanks to all the programs and guidance."
+    testimonial: "ASBM University truly nurtures its students. I've been able to develop leadership, communication and analytical skills thanks to all the programs and guidance.",
+    email: "megha.das@student.asbm.ac.in",
+    participationScore: 90,
+    strengths: ["Leadership", "Problem Solving", "Creativity"],
+    areasOfImprovement: ["Time Management", "Delegation"],
+    counselorNotes: "Megha is a strong leader and problem solver. Recommend for leadership development workshops.",
+    personalityTraits: {
+      openness: 90,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 50
+    }
   },
   {
     id: "10",
@@ -333,7 +450,19 @@ export const mockStudents: Student[] = [
     academicScore: 83,
     avatar: "https://i.pravatar.cc/150?u=10",
     behavioralIncidents: [],
-    testimonial: "Studying at ASBM was a game changer. The mentorship and real-world exposure prepared me for a career in corporate strategy and consulting."
+    testimonial: "Studying at ASBM was a game changer. The mentorship and real-world exposure prepared me for a career in corporate strategy and consulting.",
+    email: "arvind.behera@student.asbm.ac.in",
+    participationScore: 89,
+    strengths: ["Communication", "Leadership", "Problem Solving"],
+    areasOfImprovement: ["Public Speaking", "Adaptability"],
+    counselorNotes: "Arvind is a strong communicator and leader. Recommend for public speaking workshops.",
+    personalityTraits: {
+      openness: 92,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 55
+    }
   },
   {
     id: "11",
@@ -346,7 +475,19 @@ export const mockStudents: Student[] = [
     academicScore: 88,
     avatar: "https://i.pravatar.cc/150?u=11",
     behavioralIncidents: [],
-    testimonial: "I am proud to be an ASBM alumna. The university not only equipped me with knowledge but also helped me gain confidence and a professional outlook."
+    testimonial: "I am proud to be an ASBM alumna. The university not only equipped me with knowledge but also helped me gain confidence and a professional outlook.",
+    email: "priyanka.panda@student.asbm.ac.in",
+    participationScore: 91,
+    strengths: ["Leadership", "Problem Solving", "Creativity"],
+    areasOfImprovement: ["Time Management", "Delegation"],
+    counselorNotes: "Priyanka is a strong leader and problem solver. Recommend for leadership development workshops.",
+    personalityTraits: {
+      openness: 94,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 50
+    }
   },
   {
     id: "12",
@@ -359,11 +500,22 @@ export const mockStudents: Student[] = [
     academicScore: 80,
     avatar: "https://i.pravatar.cc/150?u=12",
     behavioralIncidents: [],
-    testimonial: "The interactive and case-based learning at ASBM made all the difference in shaping my problem-solving and analytical mindset."
+    testimonial: "The interactive and case-based learning at ASBM made all the difference in shaping my problem-solving and analytical mindset.",
+    email: "sourav.samantaray@student.asbm.ac.in",
+    participationScore: 88,
+    strengths: ["Communication", "Leadership", "Problem Solving"],
+    areasOfImprovement: ["Public Speaking", "Adaptability"],
+    counselorNotes: "Sourav is a strong communicator and leader. Recommend for public speaking workshops.",
+    personalityTraits: {
+      openness: 96,
+      conscientiousness: 78,
+      extraversion: 80,
+      agreeableness: 75,
+      neuroticism: 55
+    }
   }
 ];
 
-// Teachers data
 export const mockTeachers: Teacher[] = [
   {
     id: "1",
