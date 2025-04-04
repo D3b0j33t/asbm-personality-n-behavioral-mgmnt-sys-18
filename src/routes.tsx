@@ -8,40 +8,73 @@ import StudentAnalytics from './pages/StudentAnalytics';
 import StudentDetail from './pages/StudentDetail';
 import CalendarPage from './pages/Calendar';
 import Reports from './pages/Reports';
+import PageLayout from './components/PageLayout';
 
-// Define routes configuration
+// Define routes configuration with consistent layout
 export const routes = [
   {
     path: '/',
-    element: <CourseListingPage />
+    element: (
+      <PageLayout>
+        <CourseListingPage />
+      </PageLayout>
+    )
   },
   {
     path: '/admin',
-    element: <AdminPanel />
+    element: (
+      <PageLayout>
+        <AdminPanel />
+      </PageLayout>
+    )
   },
   {
     path: '/courses',
-    element: <CourseListingPage />
+    element: (
+      <PageLayout>
+        <CourseListingPage />
+      </PageLayout>
+    )
   },
   {
     path: '/course/:courseId',
-    element: <CourseDetailPage />
+    element: (
+      <PageLayout>
+        <CourseDetailPage />
+      </PageLayout>
+    )
   },
   {
     path: '/studentanalytics',
-    element: <StudentAnalytics />
+    element: (
+      <PageLayout>
+        <StudentAnalytics />
+      </PageLayout>
+    )
   },
   {
     path: '/student/:studentId',
-    element: <StudentDetail />
+    element: (
+      <PageLayout>
+        <StudentDetail />
+      </PageLayout>
+    )
   },
   {
     path: '/calendar',
-    element: <CalendarPage />
+    element: (
+      <PageLayout>
+        <CalendarPage />
+      </PageLayout>
+    )
   },
   {
     path: '/reports',
-    element: <Reports />
+    element: (
+      <PageLayout backgroundImage="/lovable-uploads/7afce98d-f21c-40c0-a054-0b0431ca10c9.png">
+        <Reports />
+      </PageLayout>
+    )
   },
   {
     // Fallback route - redirect to dashboard if no match

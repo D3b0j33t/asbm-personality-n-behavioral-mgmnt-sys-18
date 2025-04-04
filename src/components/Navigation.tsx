@@ -7,7 +7,7 @@ import {
   X, 
   BarChart3, 
   BookOpen, 
-  Calendar as CalendarIcon, 
+  CalendarIcon, 
   LineChart, 
   Users, 
   Home, 
@@ -19,6 +19,15 @@ import NotificationIcon from './NotificationIcon';
 import UserAvatar from './UserAvatar';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -65,28 +74,29 @@ const Navigation = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <Link 
-              key={item.path}
-              to={item.path}
-              className={`nav-link px-3 py-2 rounded-md text-sm font-medium ${
-                pathname === item.path
-                  ? isScrolled 
-                    ? 'text-primary bg-primary/10' 
-                    : 'text-white bg-white/20'
-                  : isScrolled
-                    ? 'text-gray-600 hover:text-primary hover:bg-primary/5'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-              } transition-all duration-200`}
-            >
-              <div className="flex items-center space-x-1">
-                {item.icon}
-                <span>{item.label}</span>
-              </div>
-            </Link>
-          ))}
-        </nav>
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            {navItems.map((item) => (
+              <NavigationMenuItem key={item.path}>
+                <Link 
+                  to={item.path}
+                  className={`nav-link px-3 py-2 rounded-md text-sm font-medium ${
+                    pathname === item.path
+                      ? isScrolled 
+                        ? 'text-primary bg-primary/10' 
+                        : 'text-white bg-white/20'
+                      : isScrolled
+                        ? 'text-gray-600 hover:text-primary hover:bg-primary/5'
+                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                  } transition-all duration-200 flex items-center gap-2`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Link>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
         
         {/* User Controls */}
         <div className="flex items-center space-x-2">
