@@ -19,6 +19,9 @@ interface AuthContextType {
   login: (email: string, password: string, role: UserRole) => void;
   loginWithGoogle: () => void;
   logout: () => void;
+  resetPassword: (email: string, newPassword: string) => Promise<boolean>;
+  requestPasswordReset: (email: string) => Promise<boolean>;
+  verifyPasswordResetCode: (email: string, code: string) => Promise<boolean>;
   userName: string | null;
   userAvatar: string | null;
   userEmail: string | null;
@@ -30,6 +33,9 @@ const AuthContext = createContext<AuthContextType>({
   login: () => {},
   loginWithGoogle: () => {},
   logout: () => {},
+  resetPassword: async () => false,
+  requestPasswordReset: async () => false,
+  verifyPasswordResetCode: async () => false,
   userName: null,
   userAvatar: null,
   userEmail: null
@@ -87,6 +93,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (email: string, password: string, role: UserRole) => {
     // In a real app, this would validate credentials with a backend
     if (email && password) {
+      // Check for minimum password length for security
+      if (password.length < 8) {
+        toast({
+          title: "Invalid Password",
+          description: "Password must be at least 8 characters long.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       // Set mock user name based on role
       let name, avatar;
       
@@ -173,6 +189,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     navigate('/');
   };
+  
+  // Mock function to request a password reset (would connect to backend API in real app)
+  const requestPasswordReset = async (email: string): Promise<boolean> => {
+    // In a real app, this would call an API to send a password reset email
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        toast({
+          title: "Password Reset Requested",
+          description: `If an account exists with ${email}, you will receive a reset code.`,
+        });
+        resolve(true);
+      }, 2000);
+    });
+  };
+
+  // Mock function to verify a password reset code (would connect to backend API in real app)
+  const verifyPasswordResetCode = async (email: string, code: string): Promise<boolean> => {
+    // In a real app, this would verify the code with a backend
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // For demo purposes, consider any code valid
+        resolve(true);
+      }, 2000);
+    });
+  };
+
+  // Mock function to reset a password (would connect to backend API in real app)
+  const resetPassword = async (email: string, newPassword: string): Promise<boolean> => {
+    // In a real app, this would update the password in a database
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        toast({
+          title: "Password Reset Successful",
+          description: "Your password has been updated. You can now log in with your new password.",
+        });
+        resolve(true);
+      }, 2000);
+    });
+  };
 
   return (
     <AuthContext.Provider value={{ 
@@ -181,6 +236,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       login, 
       loginWithGoogle,
       logout,
+      resetPassword,
+      requestPasswordReset,
+      verifyPasswordResetCode,
       userName: userData.name,
       userAvatar: userData.avatar,
       userEmail: userData.email

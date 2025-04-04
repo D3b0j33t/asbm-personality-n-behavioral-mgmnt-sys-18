@@ -41,3 +41,52 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Fixed navigation styling */
+.fixed-nav {
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Background overlay styles */
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Glassmorphism styles */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+}
+
+/* Custom password strength indicator */
+.password-strength-indicator {
+  height: 4px;
+  transition: all 0.2s ease;
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+.strength-weak {
+  background-color: #f44336;
+  width: 30%;
+}
+
+.strength-medium {
+  background-color: #ff9800;
+  width: 60%;
+}
+
+.strength-strong {
+  background-color: #4caf50;
+  width: 100%;
+}

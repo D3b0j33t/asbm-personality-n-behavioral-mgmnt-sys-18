@@ -10,7 +10,7 @@ import { Bell, Calendar, CheckCircle2, AlertTriangle, TrendingUp, Users, FilePie
 import { mockCourses, mockStudents } from '@/utils/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // Add this import
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Dashboard = () => {
   const { userRole, userName } = useAuth();
@@ -46,9 +46,20 @@ const Dashboard = () => {
     .slice(0, 5);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Background image with overlay */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <img 
+          src="/lovable-uploads/7afce98d-f21c-40c0-a054-0b0431ca10c9.png" 
+          alt="ASBM University Campus" 
+          className="w-full h-full object-cover" 
+        />
+        <div className="absolute inset-0 bg-primary/5 backdrop-blur-sm"></div>
+      </div>
+
       <Navigation />
-      <main className="flex-1 py-6 px-4 md:px-6 lg:px-8">
+      
+      <main className="flex-1 py-6 px-4 md:px-6 lg:px-8 mt-16">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
             <div>
@@ -77,7 +88,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {userRole === 'student' && (
               <>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Pending Assignments</CardTitle>
                   </CardHeader>
@@ -88,7 +99,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Your Attendance</CardTitle>
                   </CardHeader>
@@ -100,7 +111,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Behavior Score</CardTitle>
                   </CardHeader>
@@ -112,7 +123,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Academic Score</CardTitle>
                   </CardHeader>
@@ -129,7 +140,7 @@ const Dashboard = () => {
             
             {(userRole === 'teacher' || userRole === 'admin') && (
               <>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Total Students</CardTitle>
                   </CardHeader>
@@ -143,7 +154,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Average Attendance</CardTitle>
                   </CardHeader>
@@ -155,7 +166,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Behavior Incidents</CardTitle>
                   </CardHeader>
@@ -175,7 +186,7 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Academic Performance</CardTitle>
                   </CardHeader>
@@ -194,7 +205,7 @@ const Dashboard = () => {
           {/* Conditional content based on user role */}
           {userRole === 'student' && (
             <Tabs defaultValue="enrolled" className="mb-8">
-              <TabsList>
+              <TabsList className="bg-white/70 backdrop-blur-sm">
                 <TabsTrigger value="enrolled">Enrolled Courses</TabsTrigger>
                 <TabsTrigger value="todo">To Do</TabsTrigger>
               </TabsList>
@@ -206,7 +217,7 @@ const Dashboard = () => {
                 </div>
               </TabsContent>
               <TabsContent value="todo">
-                <div className="bg-white rounded-lg shadow">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
                   <div className="p-4 border-b">
                     <h3 className="font-semibold">Upcoming Assignments</h3>
                   </div>
@@ -241,7 +252,7 @@ const Dashboard = () => {
           {/* For teachers and admin - show at-risk students */}
           {(userRole === 'teacher' || userRole === 'admin') && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <Card className="lg:col-span-2">
+              <Card className="lg:col-span-2 bg-white/90 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>At-Risk Students</CardTitle>
                   <CardDescription>Students with low attendance or behavior scores</CardDescription>
@@ -287,7 +298,7 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-white/90 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>Quick Actions</CardTitle>
                   <CardDescription>Frequent tasks and reports</CardDescription>
@@ -314,7 +325,7 @@ const Dashboard = () => {
           )}
 
           {/* Recent activity for all users */}
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
               <CardDescription>Latest updates in your account</CardDescription>
