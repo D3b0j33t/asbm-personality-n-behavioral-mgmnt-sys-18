@@ -23,14 +23,15 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({ toggleSidebar }) =>
   const { userName, userRole, userAvatar, logout } = useAuth();
 
   return (
-    <header className="h-16 border-b flex items-center px-4 md:px-6">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2 md:hidden">
+    <header className="h-16 border-b flex items-center px-4 md:px-6 bg-background z-20">
+      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2">
         <MenuIcon className="h-5 w-5" />
       </Button>
       
       <div className="flex items-center flex-1">
         <Link to="/" className="flex items-center gap-2">
           <img src="/lovable-uploads/e837c76a-f20c-4215-b385-a87dd3a9f7ee.png" alt="ASBM University" className="h-10" />
+          <span className="font-semibold text-lg hidden md:inline-block">ASBM Classroom</span>
         </Link>
         
         <div className="flex-1 flex justify-end items-center gap-2">
@@ -51,7 +52,7 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({ toggleSidebar }) =>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{userName}</p>
+                  <p className="text-sm font-medium leading-none">{userName || 'Guest'}</p>
                   <p className="text-xs leading-none text-muted-foreground capitalize">
                     {userRole || 'User'}
                   </p>

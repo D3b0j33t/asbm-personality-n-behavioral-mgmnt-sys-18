@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   UserCircle2,
   BadgeCheck,
-  CreditCard,
+  Users,
+  BookOpen,
 } from "lucide-react";
 
 interface NavItemProps {
@@ -56,21 +57,23 @@ const Navigation: React.FC = () => {
   const commonNavItems = [
     { to: "/", label: "Dashboard", icon: Home },
     { to: "/calendar", label: "Calendar", icon: CalendarIcon },
+    { to: "/courses", label: "My Courses", icon: GraduationCap },
     { to: "/todo", label: "Tasks", icon: CheckSquare },
     { to: "/profile", label: "Profile", icon: UserCircle2 },
   ];
 
   const roleBasedNavItems = {
     student: [
-      { to: "/course/1", label: "My Courses", icon: GraduationCap },
+      { to: "/studentanalytics", label: "My Analytics", icon: BarChart3 },
     ],
     teacher: [
-      { to: "/course/1", label: "My Courses", icon: GraduationCap },
       { to: "/reports", label: "Reports", icon: BarChart3 },
+      { to: "/students", label: "Students", icon: Users },
       { to: "/admin", label: "Admin Panel", icon: ShieldCheck },
     ],
     admin: [
       { to: "/reports", label: "Reports", icon: BarChart3 },
+      { to: "/students", label: "Students", icon: Users },
       { to: "/admin", label: "Admin Panel", icon: ShieldCheck },
     ],
   };
@@ -87,14 +90,14 @@ const Navigation: React.FC = () => {
   const navItems = getNavItems();
 
   return (
-    <>
+    <div className="flex flex-col h-screen overflow-hidden">
       <NavigationHeader toggleSidebar={toggleSidebar} />
       
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar navigation */}
         <aside
           className={cn(
-            "border-r bg-background transition-all duration-300 ease-in-out",
+            "border-r bg-background transition-all duration-300 ease-in-out flex-shrink-0 overflow-y-auto",
             isSidebarOpen ? "w-64" : "w-0 -translate-x-full md:w-16 md:translate-x-0"
           )}
         >
@@ -116,7 +119,7 @@ const Navigation: React.FC = () => {
               <p className="text-xs text-muted-foreground">Bhubaneswar Campus</p>
               <div className="flex items-center text-xs text-muted-foreground">
                 <BadgeCheck className="h-4 w-4 mr-1 text-primary" />
-                Summer Term 2023
+                <span>Summer Term 2025</span>
               </div>
             </div>
           </div>
@@ -129,8 +132,15 @@ const Navigation: React.FC = () => {
             onClick={toggleSidebar}
           />
         )}
+        
+        {/* Main content area */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="container mx-auto py-6 px-4 md:px-6">
+            {/* Content will be rendered here from Routes */}
+          </div>
+        </main>
       </div>
-    </>
+    </div>
   );
 };
 
